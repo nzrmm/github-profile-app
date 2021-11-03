@@ -6,11 +6,11 @@ searchUsername.addEventListener('change', async function (e) {
     
     let username = searchUsername.value;
     try {
+        searchUsername.value = "";
+
         const user = await getUser(username);
         const repos = await getRepos(username);
         
-        searchUsername.value = "";
-
         cardWrapper.style.color = '#121212';
         cardWrapper.innerHTML = getCard(user, repos);
     } catch (error) {
@@ -80,10 +80,11 @@ function getCard(user, repos) {
 
 function addReposToCard(repos) {
     let reposWrapper = ``;
-    repos.slice(0, 10).forEach(repo => {
-        reposWrapper += `
-            <a href="${repo.html_url}">${repo.name}</a>
-        `
+    repos.sort((a,b) => b.stargazers_count - a.stargazers_count).slice(0, 10)
+        .forEach(repo => {
+            reposWrapper += `
+                <a href="${repo.html_url}">${repo.name}</a>
+            `
     })
 
     return reposWrapper

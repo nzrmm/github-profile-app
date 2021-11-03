@@ -68,9 +68,10 @@ main input:focus {
 }
 
 .card .card-image img {
-    width: 8rem;
-    height: 8rem;
+    width: 10rem;
+    height: 10rem;
     border-radius: 50%;
+    border: .2rem solid rgba(0, 0, 0, .2);
 }
 
 .card .card-content {
@@ -119,7 +120,13 @@ main input:focus {
     padding: .1rem .5rem;
     border-radius: .5rem;
     margin: .3rem;
+    transition: all .1s ease;
 }
+
+.card .card-content .repos-activity .repos a:hover {
+    background-color: rgba(255, 255, 255, .2);
+}
+
 
 
 @media only screen and (min-width : 600px) {
@@ -127,6 +134,8 @@ main input:focus {
         width: 70%;
     }
 }
+
+
 
 @media only screen and (min-width : 768px) {
     main {
@@ -152,8 +161,8 @@ main input:focus {
     }
 
     .card .card-image img {
-        width: 9rem;
-        height: 9rem;
+        width: 11rem;
+        height: 11rem;
     }
 
     .card .card-content {
