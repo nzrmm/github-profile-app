@@ -1,31 +1,56 @@
-const searchKeyword = document.getElementById('search-keyword');
+const searchUsername = document.getElementById('search-username');
 const cardWrapper = document.querySelector('.card-wrapper');
 
-searchKeyword.addEventListener('change', async function (e) {
+searchUsername.addEventListener('change', async function (e) {
     e.preventDefault();
     
-    const keyword = searchKeyword.value;
+    let username = searchUsername.value;
     try {
-        const user = await getUser(keyword);
-        cardWrapper.innerHTML = getCard(user);
+        const user = await getUser(username);
+        const repos = await getRepos(username);
+        
+        searchUsername.value = "";
+
+        cardWrapper.style.color = '#121212';
+        cardWrapper.innerHTML = getCard(user, repos);
     } catch (error) {
-        alert(error);
+        cardWrapper.style.color = '#666';
+        cardWrapper.innerHTML = error;
     }
 })
 
 
-function getUser(user) {
-    const url = `https://api.github.com/users/${user}`
+function getUser(username) {
+    const url = `https://api.github.com/users/${username}`
     return fetch(url)
-        .then(response =>  {
-            console.log(response.ok);
-            if(!response.ok) throw new Error(response.status);
+        .then(response => {
+            if(!response.ok) {
+                throw new Error(`${response.status}, not found`);
+            }
+            return response.json();
+        })
+        .then(response => {
+            if(response.name === null) {
+                throw new Error('Username not available !');
+            }
+
             return response;
         })
-        .then(response => response.json())
 }
 
-function getCard(user) {
+function getRepos(username) {
+    const url = `https://api.github.com/users/${username}/repos`
+    return fetch(url)
+        .then(response => {
+            if(!response.ok) {
+                throw new Error(`${response.status}, not found`);
+            }
+            return response.json();
+        })
+        .then(response => response);
+}
+
+function getCard(user, repos) {
     return `
     <div class="card">
         <div class="card-image">
@@ -37,23 +62,29 @@ function getCard(user) {
 
             <div class="public-activity">
                 <p>${user.followers} <span>Followers</span></p>
-                <p>${user.public_repos} <span>Repos</span></p>
                 <p>${user.following} <span>Following</span></p>
+                <p>${user.public_repos} <span>Repos</span></p>
             </div>
 
             <div class="repos-activity">
                 <h1>Repos</h1>
-                    <div class="repos">
-                    <span>Javascript</span>
-                    <span>Laravel</span>
-                    <span>Node Js</span>
-                    <span>laravel Breeze</span>
-                    <span>Express Js</span>
-                    <span>Redis Caching</span>
-                    <span>Laravel Jetstream</span>
+
+                <div class="repos">
+                    ${addReposToCard(repos)}
                 </div>
             </div>
         </div>
     </div>
     `
+}
+
+function addReposToCard(repos) {
+    let reposWrapper = ``;
+    repos.slice(0, 10).forEach(repo => {
+        reposWrapper += `
+            <a href="${repo.html_url}">${repo.name}</a>
+        `
+    })
+
+    return reposWrapper
 }

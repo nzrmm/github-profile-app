@@ -29,6 +29,7 @@ main {
 
 main input {
     width: 60%;
+    background-color: rgba(255, 255, 255, .5);
     font-family: inherit;
     text-align: center;
     border-radius: .5rem;
@@ -111,12 +112,13 @@ main input:focus {
     flex-wrap: wrap;
 }
 
-.card .card-content .repos-activity .repos span {
+.card .card-content .repos-activity .repos a {
+    text-decoration: none;
     background-color: rgba(0, 0, 0, .2);
     color: #121212;
     padding: .1rem .5rem;
     border-radius: .5rem;
-    margin: .2rem;
+    margin: .3rem;
 }
 
 
